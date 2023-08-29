@@ -5,6 +5,32 @@
     <artifactId>RobinsToolbox</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+    
+    <name>Robin's Toolbox</name>
+    <description>This is my little box of tools I've made up to help me with random things</description>
+    <url>https://github.com/robzsaunders/RobinsToolbox</url>
+    
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>Robin Saunders</name>
+            <email>robin@curae.ca</email>
+            <organization>Tendies inc.</organization>
+            <url>https://github.com/robzsaunders/</url>        
+        </developer>
+    </developers>
+    
+    <scm>
+      <connection>scm:git:git://github.com/robzsaunders/RobinsToolbox.git</connection>
+      <developerConnection>scm:git:ssh://github.com:robzsaunders/RobinsToolbox.git</developerConnection>
+      <url>http://github.com/robzsaunders/RobinsToolbox</url>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>15</maven.compiler.source>
