@@ -129,6 +129,7 @@ public class Print {
         writeToFile(buffer);
     }
     
+    // Formatter to ensure each new piece of data is on it's own line
     private void bufferStorage(String data){
         buffer = buffer+data+"\n";
     }
