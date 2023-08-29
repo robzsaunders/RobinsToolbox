@@ -61,7 +61,7 @@ public class Print {
     private static Print single_instance = null;
     private boolean isDebugging = false;
     private boolean buffering = false;
-    private String buffer = null;
+    private String buffer = "~~~~~~ Start of new Print() instance ~~~~~~";
     
     // Useful to keep instance count low. Typically don't need a new instance every time we're writing / outputting data.
     public static Print getInstance(){
@@ -72,10 +72,7 @@ public class Print {
     
     // Main function used, supposed to translate any general object input into it's string output. 
     public void log (Object entry){
-        systemOutTimeStamped(entry.toString());
-        if (buffering){
-            bufferStorage(entry.toString());
-        }
+        systemOutTimeStamped(entry.toString(), true);
     }
     
     // For outputting text to a UI interface. Requires some customization
@@ -86,19 +83,12 @@ public class Print {
 
     public void toBoth(Object entry){
         // (Some sort of parent handler here).jLogTextArea.append("\n"+entry.toString());
-        systemOutTimeStamped(entry.toString());
-        if (buffering){
-            bufferStorage(entry.toString());
-        }
+        systemOutTimeStamped(entry.toString(), true);
     }
     
+    // For only writing to file and not terminal output. Use with buffer start/stop. Otherwise call writeToFile directly
     public void toWrite(Object entry){
-        if (buffering){
-            bufferStorage(entry.toString());
-        }
-        else {
-            writeToFile(entry.toString());
-        }
+        systemOutTimeStamped(entry.toString(), false);
     }
     
     public void logNoTimeStamp (Object entry){
@@ -111,10 +101,7 @@ public class Print {
     // For use with overarching debug switches
     public void debug (Object entry){
         if (isDebugging){
-            systemOutTimeStamped(entry.toString());
-        }
-        if (buffering){
-            bufferStorage(entry.toString());
+            systemOutTimeStamped(entry.toString(), true);
         }
     }
     
@@ -136,6 +123,7 @@ public class Print {
         buffering=true;
     }
     
+    // Stop buffer will then write everything to file.
     public void stopBuffer(){
         buffering=false;
         writeToFile(buffer);
@@ -145,22 +133,19 @@ public class Print {
         buffer = buffer+data+"\n";
     }
     
-    private void writeToFile(String data){
+    public void writeToFile(String data){
         // Inline date formatter + getter
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");Date date = new Date();String today = dateFormat.format(date);
         try {
-            // Get current working directory and create a folder for current day
-            File directory = new File(  System.getProperty("user. dir")+today);
-            if (!directory.exists()){
-                directory.mkdir();
+            // Get current working directory and create a folder for current day            
+            File file =new File(System.getProperty("user. dir")+today+"\\printOutput.txt");
+            if (!file.exists()){
+                file.mkdir();
             }
-            File file =new File(        System.getProperty("user. dir")+today+"\\printOutput.txt");
             FileWriter fw;
             fw = new FileWriter(file,true); //Here true is to append the content to file
-            //BufferedWriter writer for better performance
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(data+"\n");
-            //Closing BufferedWriter Stream
             bw.close();
             buffer="";
         } catch (IOException ex) {
@@ -168,13 +153,11 @@ public class Print {
         }
     }
     
-    private void systemOutTimeStamped(Object message){
+    private void systemOutTimeStamped(Object message, boolean printOut){
         try{
             String strMessage = "[" + new Timestamp(System.currentTimeMillis()).toString().split(" ")[1] + "]" + message.toString();
-            if (buffering==true){
-                bufferStorage(strMessage.toString());
-            }
-            System.out.println(strMessage.toString());
+            if (buffering)bufferStorage(strMessage.toString());
+            if (printOut)System.out.println(strMessage.toString());
         }catch(Exception e){
             System.out.println(message.toString());
             e.printStackTrace();
